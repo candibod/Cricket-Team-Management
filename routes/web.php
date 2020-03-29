@@ -20,7 +20,7 @@ Route::group([], function () {
 
 		Route::post('/create', [
 			'as'   => 'create',
-			'uses' => 'TeamHandlerController@showTeamsList'
+			'uses' => 'TeamHandlerController@createTeam'
 		]);
 	});
 });

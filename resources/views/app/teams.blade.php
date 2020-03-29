@@ -11,6 +11,7 @@
 @section('css')
 	<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons"/>
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.css"/>
 	<link rel="stylesheet" type="text/css" href="{{ asset('css/app.css') }}"/>
 @endsection
 
@@ -61,38 +62,29 @@
 					<form id="FormTeamRegistration" action="{{ route("teams.create") }}" method="POST">
 						<div class="form-row">
 							<div class="form-group col-md-12">
-								<label for="inputName">Team Name</label>
-								<input type="text" class="form-control" id="inputName" placeholder="Sunrisers Hyderabad">
+								<label for="inputName">Team Name *</label>
+								<input type="text" class="form-control" id="inputName" name="inputName" placeholder="Sunrisers Hyderabad">
+							</div>
+							<div class="form-group col-md-12">
+								<label for="customFile">Franchise Logo *</label>
+								<div class="custom-file">
+									<input type="file" class="custom-file-input" id="customFile" name="customFile">
+									<label class="custom-file-label" for="customFile">Choose file</label>
+								</div>
+								<small>Supported file type: jpg, jpeg, png. Max image size: 1MB</small>
+							</div>
+							<div class="form-group col-md-6">
+								<label for="inputColor">Franchise Color in HEX <small>(optional)</small></label>
+								<input type="text" class="form-control" id="inputColor" name="inputColor" placeholder="F5F5F5">
 							</div>
 							<div class="form-group col-md-6">
 								<label for="inputState">State <small>(optional)</small></label>
-								<input type="text" class="form-control" id="inputState" placeholder="Telangana">
+								<input type="text" class="form-control" id="inputState" name="inputState" placeholder="Telangana">
 							</div>
-							<div class="form-group col-md-6">
-								<label for="inputColor">Franchise Color <small>(optional)</small></label>
-								<input type="text" class="form-control" id="inputColor" placeholder="#d64363">
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="customFile">Franchise Logo</label>
-						    <div class="custom-file">
-						      <input type="file" class="custom-file-input" id="customFile" name="filename">
-						      <label class="custom-file-label" for="customFile">Choose file</label>
-						    </div>
-								<small>Supported file type: jpg, jpeg, png. Max image size: 1MB</small>
 						</div>
 						<div class="text-center mt-4">
-							<button type="button" class="btn btn-primary">CREATE TEAM</button>
-							<button id="btnJobApplicationSubmit" type="submit" class="btn btn-primary btn-submit">
-								<div class="default">
-									<i class="material-icons valign-mid">&#xE2C6;</i>
-									<span class="valign-mid">Submit</span>
-								</div>
-								<div class="waiting hide">
-									<i class="material-icons valign-mid">&#xE2C6;</i>
-									<span class="valign-mid">Submitting..</span>
-								</div>
-							</button>
+							<button type="submit" class="btn btn-primary" id="FormTeamRegistrationSubmitBtn">CREATE TEAM</button>
+							<button type="button" class="btn btn-primary d-none" id="FormTeamRegistrationLoadingBtn">Submitting...</button>
 						</div>
 					</form>
 				</div>
@@ -110,31 +102,24 @@
 				$button.modal("show");
 			});
 
+			// Add the following code if you want the name of the file appear on select
+			$(".custom-file-input").on("change", function() {
+				var fileName = $(this).val().split("\\").pop();
+				$(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+			});
+
 			$('#FormTeamRegistration').submit(function (e) {
 				e.preventDefault();
-
-				var btnSubmit = $('#btnJobApplicationSubmit');
-
-				function hideSubmitButton() {
-					btnSubmit.attr('disabled', true);
-					btnSubmit.find('.default').addClass('hide');
-					btnSubmit.find('.waiting').removeClass('hide');
-				}
-
-				function showSubmitButton() {
-					btnSubmit.attr('disabled', false);
-					btnSubmit.find('.default').removeClass('hide');
-					btnSubmit.find('.waiting').addClass('hide');
-				}
-
-				var formUrl = $(this).attr('action');
 				hideSubmitButton();
 
 				$.ajax({
-					url: formUrl,
+					url: $(this).attr('action'),
 					type: "POST",
+					headers: {
+						'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+					},
 					data: new FormData(this),
-					cache: false,
+					dataType: "json",
 					processData: false,
 					contentType: false,
 					success: function (data) {
@@ -144,23 +129,41 @@
 							$('#FormSuccessModal').modal('show');
 						} else if (data.error) {
 							$('#TeamRegisterModal').modal('show');
-							window.showNotyError(data.error);
+							new Noty({
+								type: 'error',
+								layout: 'topRight',
+								text: data.error,
+								timeout: 2500,
+							}).show();
 						} else {
 							$('#TeamRegisterModal').modal('show');
-							window.showNotyError("Some error occurred while submitting your request")
+							new Noty({
+								type: 'error',
+								layout: 'topRight',
+								text: "OOPS!! looks like there is an issue with your submission, Please try again after some time."
+							}).show();
 						}
 					},
 					error: function (jqXHR, textStatus, errorThrown) {
 						showSubmitButton();
-						window.showNotyError("Some error occurred while submitting your request");
-						window.notifyTeam({
-							"url": url,
-							"textStatus": textStatus,
-							"errorThrown": errorThrown
-						});
+						new Noty({
+							type: 'error',
+							layout: 'topRight',
+							text: "OOPS!! looks like there is an issue with your submission, Please try again after some time."
+						}).show();
 					}
 				});
 			});
+
+			function hideSubmitButton() {
+				$("#FormTeamRegistrationSubmitBtn").addClass("d-none");
+				$("#FormTeamRegistrationLoadingBtn").removeClass("d-none");
+			}
+
+			function showSubmitButton() {
+				$("#FormTeamRegistrationSubmitBtn").removeClass("d-none");
+				$("#FormTeamRegistrationLoadingBtn").addClass("d-none");
+			}
 		});
 	</script>
 @endsection
