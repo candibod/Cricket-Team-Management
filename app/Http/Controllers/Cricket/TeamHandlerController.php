@@ -6,26 +6,28 @@ use App\Models\Cricket\Teams;
 
 class TeamHandlerController extends BaseController
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Base Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller handles all the common functionality between the controllers
-    |
-    */
+	/*
+	|--------------------------------------------------------------------------
+	| Base Controller
+	|--------------------------------------------------------------------------
+	|
+	| This controller handles all the common functionality between the controllers
+	|
+	*/
 
-    /**
-     * Show list of all the teams.
-     */
-    public function showTeamsList()
-    {
-    	$teams = Teams::all();
+	/**
+	 * Show list of all the teams.
+	 */
+	public function showTeamsList()
+	{
+		$teams = Teams::all();
+		$count = $teams->count();
 
-    	if($teams->count() == 0)
-	    {
-	    }
+		$data = [
+			"teams" => $teams,
+			"count" => $count
+		];
 
-	    return view("app.teams", ["teams" => $teams]);
-    }
+		return view("app.teams", ["data" => $data]);
+	}
 }

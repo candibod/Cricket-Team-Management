@@ -17,5 +17,10 @@ Route::group([], function () {
 			'as'   => 'list',
 			'uses' => 'TeamHandlerController@showTeamsList'
 		]);
+
+		Route::post('/create', [
+			'as'   => 'create',
+			'uses' => 'TeamHandlerController@showTeamsList'
+		]);
 	});
 });
