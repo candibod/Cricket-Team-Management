@@ -48,9 +48,20 @@ header a, header a:hover {
 
 .team-card {
   height: 310px;
+  box-shadow: 0 2px 6px 0 rgba(0,0,0,.1);
+}
+
+.player-card {
+  height: 330px;
+  box-shadow: 0 2px 6px 0 rgba(0,0,0,.1);
 }
 
 .team-name {
+  font-size: 20px;
+  height: 60px;
+}
+
+.player-name {
   font-size: 20px;
 }
 

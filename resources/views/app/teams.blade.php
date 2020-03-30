@@ -33,10 +33,21 @@
 						$string = $team->name; $strpos = strrpos($string, " "); $string = $strpos > 0 ? substr($string, 0, $strpos) . "<br>" . substr($string , $strpos + 1) : $string;
 					@endphp
 					<div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-						<a class="team-card" href="{{ route("teams.list") }}" style="background: linear-gradient(136deg, #{{ $team->team_franchise_color }}c0, #{{ $team->team_franchise_color }}); margin-top: 2rem; border-radius: 0.6em; color: #fff; display: block; overflow: hidden; position: relative; z-index: 0;">
-							<div class="tLogo158x" style="background-position: {{ $team->sprite_image_coord }}"></div>
+						<a class="team-card" href="{{ route("teams.players.list", strtolower(str_replace(" ", "-", $team->name))) }}" style="background: linear-gradient(136deg, #{{ $team->team_franchise_color }}c0, #{{ $team->team_franchise_color }}); margin-top: 2rem; border-radius: 0.6em; color: #fff; display: block; overflow: hidden; position: relative; z-index: 0;">
+							@if(is_null($team->logo_url))
+								<div class="tLogo158x" style="background-position: {{ $team->sprite_image_coord }}"></div>
+							@else
+								<div class="text-center" style="margin: 15px auto">
+									<img src="{{ config('cricket.logo_upload_path') . $team->logo_url }}" height="158" style="max-width: 90%">
+								</div>
+							@endif
 							<div class="text-center mb-3">
-								<p class="font-weight-bold team-name mb-3">{!! $string !!}</p>{{ $team->club_state }}
+								<p class="font-weight-bold team-name mb-3">{!! $string !!}</p>
+								@if(!is_null($team->club_state))
+									{{ $team->club_state }}
+								@else
+									--
+								@endif
 							</div>
 						</a>
 					</div>
@@ -49,121 +60,19 @@
 
 	<div class="btn-floating text-white font-weight-bold add-team-btn">+</div>
 
-	<div class="modal fade" id="TeamRegisterModal" tabindex="-1" role="dialog" aria-hidden="true">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="exampleModalLongTitle">Register New Team</h5>
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="modal-body">
-					<form id="FormTeamRegistration" action="{{ route("teams.create") }}" method="POST">
-						<div class="form-row">
-							<div class="form-group col-md-12">
-								<label for="inputName">Team Name *</label>
-								<input type="text" class="form-control" id="inputName" name="inputName" placeholder="Sunrisers Hyderabad">
-							</div>
-							<div class="form-group col-md-12">
-								<label for="customFile">Franchise Logo *</label>
-								<div class="custom-file">
-									<input type="file" class="custom-file-input" id="customFile" name="customFile">
-									<label class="custom-file-label" for="customFile">Choose file</label>
-								</div>
-								<small>Supported file type: jpg, jpeg, png. Max image size: 1MB</small>
-							</div>
-							<div class="form-group col-md-6">
-								<label for="inputColor">Franchise Color in HEX <small>(optional)</small></label>
-								<input type="text" class="form-control" id="inputColor" name="inputColor" placeholder="F5F5F5">
-							</div>
-							<div class="form-group col-md-6">
-								<label for="inputState">State <small>(optional)</small></label>
-								<input type="text" class="form-control" id="inputState" name="inputState" placeholder="Telangana">
-							</div>
-						</div>
-						<div class="text-center mt-4">
-							<button type="submit" class="btn btn-primary" id="FormTeamRegistrationSubmitBtn">CREATE TEAM</button>
-							<button type="button" class="btn btn-primary d-none" id="FormTeamRegistrationLoadingBtn">Submitting...</button>
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
-	</div>
+	@include('modals.create-team')
 @endsection
 
 @section('javascript')
 	<script type="text/javascript">
 		$(document).ready(function () {
-			var $button = $("#TeamRegisterModal");
-
 			$(".add-team-btn").on("click", function () {
-				$button.modal("show");
-			});
-
-			// Add the following code if you want the name of the file appear on select
-			$(".custom-file-input").on("change", function() {
-				var fileName = $(this).val().split("\\").pop();
-				$(this).siblings(".custom-file-label").addClass("selected").html(fileName);
-			});
-
-			$('#FormTeamRegistration').submit(function (e) {
-				e.preventDefault();
-				hideSubmitButton();
-
-				$.ajax({
-					url: $(this).attr('action'),
-					type: "POST",
-					headers: {
-						'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-					},
-					data: new FormData(this),
-					dataType: "json",
-					processData: false,
-					contentType: false,
-					success: function (data) {
-						showSubmitButton();
-						if (data.success) {
-							$('#TeamRegisterModal').modal('hide');
-							$('#FormSuccessModal').modal('show');
-						} else if (data.error) {
-							$('#TeamRegisterModal').modal('show');
-							new Noty({
-								type: 'error',
-								layout: 'topRight',
-								text: data.error,
-								timeout: 2500,
-							}).show();
-						} else {
-							$('#TeamRegisterModal').modal('show');
-							new Noty({
-								type: 'error',
-								layout: 'topRight',
-								text: "OOPS!! looks like there is an issue with your submission, Please try again after some time."
-							}).show();
-						}
-					},
-					error: function (jqXHR, textStatus, errorThrown) {
-						showSubmitButton();
-						new Noty({
-							type: 'error',
-							layout: 'topRight',
-							text: "OOPS!! looks like there is an issue with your submission, Please try again after some time."
-						}).show();
-					}
+				$("#TeamRegisterModal").modal({
+					'show': true,
+					'backdrop': 'static',
+					'keyboard': false
 				});
 			});
-
-			function hideSubmitButton() {
-				$("#FormTeamRegistrationSubmitBtn").addClass("d-none");
-				$("#FormTeamRegistrationLoadingBtn").removeClass("d-none");
-			}
-
-			function showSubmitButton() {
-				$("#FormTeamRegistrationSubmitBtn").removeClass("d-none");
-				$("#FormTeamRegistrationLoadingBtn").addClass("d-none");
-			}
 		});
 	</script>
 @endsection

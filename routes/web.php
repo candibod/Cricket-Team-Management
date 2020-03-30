@@ -12,6 +12,9 @@
 */
 
 Route::group([], function () {
+	/*
+	 * Since I want multiple parameters in URL path, declared routes rather than using Route::resource
+	 * */
 	Route::group(['prefix' => 'teams', 'as' => 'teams.', 'namespace' => 'Cricket'], function () {
 		Route::get('/', [
 			'as'   => 'list',
@@ -22,5 +25,19 @@ Route::group([], function () {
 			'as'   => 'create',
 			'uses' => 'TeamHandlerController@createTeam'
 		]);
+
+		Route::group(['as' => 'players.'], function () {
+			Route::get('{teamURL}', [
+				'as'   => 'list',
+				'uses' => 'TeamHandlerController@showTeamPlayers'
+			]);
+
+			Route::post('player/{teamId}/create', [
+				'as'   => 'create',
+				'uses' => 'TeamHandlerController@createTeamPlayer'
+			]);
+		});
 	});
+
+	Route::resource('matches','Cricket\TeamMatchesHandlerController');
 });
