@@ -10,9 +10,7 @@
 
 @section('css')
 	<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons"/>
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.css"/>
-	<link rel="stylesheet" type="text/css" href="{{ asset('css/app.css') }}"/>
+	<link rel="stylesheet" type="text/css" href="{{ asset('css/all.css') }}"/>
 @endsection
 
 @section('content')
@@ -29,66 +27,37 @@
 		@if ($data["count"] > 0)
 			@foreach($data["matches"] as $match)
 				<div class="row mt-4">
-					<div class="side col-6 @if($match->team_id_1 == $match->winner_team_id) win @endif">
-						<h2 class="name">{{ $match->teamId1->name }}</h2>
-						@if(is_null($match->teamId1->logo_url))
-							<div class="tLogo158x" style="background-position: {{ $match->teamId1->sprite_image_coord }}"></div>
-						@else
-							<div class="text-center" style="margin: 15px auto">
-								<img src="{{ config('cricket.logo_upload_path') . $match->teamId1->logo_url }}" height="158" style="max-width: 90%">
-							</div>
-						@endif
-					</div>
-					<div class="versus">
-						<span>vs.</span>
+					<div class="side position-relative col-6 @if($match->team_id_1 == $match->winner_team_id) win @endif">
+						<h2 class="mt-3 name">{{ $match->teamId1->name }}</h2>
+						<p>Points: @if($match->team_id_1 == $match->winner_team_id) {{ $match->points->points }} @else 0 @endif</p>
+						<div class="text-center" style="margin: 15px auto">
+							<img src="{{ config('cricket.logo_upload_path') . $match->teamId1->logo_url }}" height="158" style="max-width: 90%">
+						</div>
+						<div class="versus">
+							<span style="margin-left: 23px">vs</span>
+						</div>
 					</div>
 					<div class="side col-6 @if($match->team_id_2 == $match->winner_team_id) win @endif">
-						<h2 class="name">{{ $match->teamId2->name }}</h2>
-						@if(is_null($match->teamId2->logo_url))
-							<div class="tLogo158x" style="background-position: {{ $match->teamId2->sprite_image_coord }}"></div>
-						@else
-							<div class="text-center" style="margin: 15px auto">
-								<img src="{{ config('cricket.logo_upload_path') . $match->teamId2->logo_url }}" height="158" style="max-width: 90%">
-							</div>
-						@endif
+						<h2 class="mt-3 name">{{ $match->teamId2->name }}</h2>
+						<p>Points: @if($match->team_id_2 == $match->winner_team_id) {{ $match->points->points }} @else 0 @endif</p>
+						<div class="text-center" style="margin: 15px auto">
+							<img src="{{ config('cricket.logo_upload_path') . $match->teamId2->logo_url }}" height="158" style="max-width: 90%">
+						</div>
 					</div>
 				</div>
 			@endforeach
 		@else
-			<div class="alert alert-warning w-100 text-center mt-3">No Teams are registered in the league, Please click the "+" icons to add a team.</div>
+			<div class="alert alert-warning w-100 text-center mt-3">No Fixtures happened in the league, Please click the "+" icon to add a fixture.</div>
 		@endif
 	</div>
 
 	<style>
-		.sides {
-			animation: 0.7s curtain cubic-bezier(0.86, 0, 0.07, 1) 0.4s both;
-			/*grid-template-columns: 50vw 50vw;*/
-		}
-
-		@keyframes curtain {
-			0% {
-				grid-gap: 100vw;
-			}
-
-			100% {
-				grid-gap: 0;
-			}
-		}
-
-		.intro {
-			height: 100%;
-			overflow: hidden;
-			display: flex;
-			justify-content: center;
-		}
-
 		.side {
 			display: flex;
 			flex-direction: column;
 			align-items: center;
 			background-color: #ee1c26;
 			color: #FFFFFF;
-			font-size: 6vw;
 		}
 
 		.win {
@@ -96,49 +65,40 @@
 		}
 
 		.name {
-			margin: 0.3em;
+			font-size: 22px;
 		}
 
 		.versus {
 			position: absolute;
-			width: 8vw;
-			height: 8vw;
+			width: 100px;
+			height: 100px;
 			background: #ffffff;
 			border-radius: 50%;
-			left: 0;
-			right: 0;
+			right: -50px;
 			bottom: 0;
 			top: 0;
 			margin: auto;
 			z-index: 3;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			font-size: 3.4vw;
+			font-size: 45px;
 			color: #123456;
-			border-width: 10px;
-			border-style: solid;
-			border-color: #1b636f #dcc9a1 #dcc9a1 #1b636f;
+			border: 5px solid #2db774;
 			transform: rotate(-45deg);
-		}
-
-		.versus span {
-			transform: rotate(35deg);
 		}
 	</style>
 
-	<a class="btn-floating text-white font-weight-bold add-team-btn">+</a>
+	<form method="post" id="CreateFixture" action="{{ route("matches.store") }}" class="d-none">
+		{{ csrf_field() }}
+		<button type="submit"></button>
+	</form>
+
+	<a class="btn-floating text-white font-weight-bold add-team-btn" style="text-decoration: none;" href="#">+</a>
 @endsection
 
 @section('javascript')
 	<script type="text/javascript">
 		$(document).ready(function () {
 			$(".add-team-btn").on("click", function () {
-				$("#TeamRegisterModal").modal({
-					'show': true,
-					'backdrop': 'static',
-					'keyboard': false
-				});
+				$("#CreateFixture").submit();
 			});
 		});
 	</script>

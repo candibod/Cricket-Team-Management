@@ -17,8 +17,7 @@ class CreateTeamsTable extends Migration {
 			$table->increments('id');
 			$table->string('name', 32);
 			$table->string('team_franchise_color', 6)->nullable();
-			$table->text('logo_url', 65535)->nullable();
-			$table->string('sprite_image_coord', 20)->nullable();
+			$table->text('logo_url')->nullable();
 			$table->string('club_state', 20)->nullable();
 			$table->timestamps();
 			$table->softDeletes();

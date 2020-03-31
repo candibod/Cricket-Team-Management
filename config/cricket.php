@@ -7,6 +7,6 @@ return [
 	|--------------------------------------------------------------------------
 	*/
 
-	'logo_upload_path'  => "/assets/images/logos/",
+	'logo_upload_path'  => "/assets/images/",
 	'player_image_path' => "/assets/images/",
 ];

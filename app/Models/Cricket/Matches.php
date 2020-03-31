@@ -17,4 +17,9 @@ class Matches extends BaseModel
 	{
 		return $this->belongsTo(Teams::class, 'team_id_2');
 	}
+
+	public function points()
+	{
+		return $this->hasOne(MatchPoints::class, 'match_id');
+	}
 }
