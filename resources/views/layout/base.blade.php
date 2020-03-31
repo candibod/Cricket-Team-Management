@@ -7,8 +7,8 @@
 	<meta name="csrf-token" content="{{ csrf_token() }}">
 	<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport'/>
 
-	<link type="image/png" rel="apple-touch-icon" sizes="76x76" href="/assets/images/favicon.png">
-	<link type="image/png" rel="icon" href="/assets/images/favicon.png">
+	<link type="image/png" rel="apple-touch-icon" sizes="76x76" href="/assets/images/static/favicon.png">
+	<link type="image/png" rel="icon" href="/assets/images/static/favicon.png">
 
 	<title>CPL | Cricket League</title>
 	<meta name="description" content="Cricket management system covering all the major concepts of laravel">

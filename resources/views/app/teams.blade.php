@@ -9,7 +9,6 @@
 @endsection
 
 @section('css')
-	<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons"/>
 	<link rel="stylesheet" type="text/css" href="{{ asset('css/all.css') }}"/>
 @endsection
 
@@ -31,9 +30,9 @@
 						$string = $team->name; $strpos = strrpos($string, " "); $string = $strpos > 0 ? substr($string, 0, $strpos) . "<br>" . substr($string , $strpos + 1) : $string;
 					@endphp
 					<div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-						<a class="team-card" href="{{ route("teams.players.list", strtolower(str_replace(" ", "-", $team->name))) }}" style="background: linear-gradient(136deg, #{{ $team->team_franchise_color }}c0, #{{ $team->team_franchise_color }}); margin-top: 2rem; border-radius: 0.6em; color: #fff; display: block; overflow: hidden; position: relative; z-index: 0;">
-							<div class="text-center" style="margin: 15px auto">
-								<img src="{{ config('cricket.logo_upload_path') . $team->logo_url }}" height="158" style="max-width: 90%">
+						<a class="team-card" href="{{ route("teams.players.list", strtolower(str_replace(" ", "-", $team->name))) }}" style="background: linear-gradient(136deg, #{{ $team->team_franchise_color }}c0, #{{ $team->team_franchise_color }});">
+							<div class="text-center team-logo-section">
+								<img src="{{ config('cricket.logo_upload_path') . $team->logo_url }}" height="158">
 							</div>
 							<div class="text-center mb-3">
 								<p class="font-weight-bold team-name mb-3">{!! $string !!}</p>

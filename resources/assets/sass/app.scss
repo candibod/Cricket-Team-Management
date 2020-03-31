@@ -38,12 +38,60 @@ header a, header a:hover {
 
 .team-card {
   height: 310px;
-  box-shadow: 0 2px 6px 0 rgba(0,0,0,.1);
+  box-shadow: 0 2px 6px 0 rgba(0, 0, 0, .1);
+  margin-top: 2rem;
+  border-radius: 0.6em;
+  color: #fff;
+  display: block;
+  overflow: hidden;
+  position: relative;
+  z-index: 0;
+  text-decoration: none;
+}
+
+.team-navigation-back-btn, .team-navigation-back-btn:hover,
+.player-career-btn, .player-career-btn:hover,
+.player-stats-btn, .player-stats-btn:hover {
+  color: #333333;
+}
+
+.team-card:hover {
+  color: #FFFFFF;
+}
+
+.player-info-vhr {
+  border-left: 1px solid #333333;
+  border-right: 1px solid #333333;
 }
 
 .player-card {
   height: 330px;
-  box-shadow: 0 2px 6px 0 rgba(0,0,0,.1);
+  box-shadow: 0 2px 6px 0 rgba(0, 0, 0, .1);
+  margin-top: 1rem;
+  border-radius: 0.6em;
+  color: #fff;
+  display: block;
+  overflow: hidden;
+  position: relative;
+  z-index: 0;
+}
+
+.team-logo-section, .matches-logo-section {
+  margin: 15px auto;
+}
+
+.player-logo-section {
+  margin: 15px auto 0 auto;
+}
+
+.team-logo-section img, .player-logo-section img, .matches-logo-section img {
+  max-width: 90%;
+}
+
+.player-info-section {
+  height: 100%;
+  background-color: white;
+  color: #333333
 }
 
 .team-name {
@@ -68,6 +116,40 @@ header a, header a:hover {
   text-align: center;
   box-shadow: 2px 2px 3px #999;
   cursor: pointer;
+  text-decoration: none;
+}
+
+.side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #ee1c26;
+  color: #FFFFFF;
+}
+
+.win {
+  background-color: #2db774;
+}
+
+.name {
+  font-size: 22px;
+}
+
+.versus {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  background: #ffffff;
+  border-radius: 50%;
+  right: -50px;
+  bottom: 0;
+  top: 0;
+  margin: auto;
+  z-index: 3;
+  font-size: 45px;
+  color: #123456;
+  border: 5px solid #2db774;
+  transform: rotate(-45deg);
 }
 
 @media (max-width: 920px) {
@@ -82,5 +164,12 @@ header a, header a:hover {
   .page-heading h1 {
     font-size: 2rem;
     margin-top: 30px;
+  }
+
+  .versus {
+    height: 60px;
+    width: 60px;
+    right: -30px;
+    font-size: 26px;
   }
 }
