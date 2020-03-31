@@ -11,6 +11,10 @@
 |
 */
 
+Route::get('/', [
+	'uses'      => 'Cricket\TeamHandlerController@defaultRouteRedirect'
+]);
+
 Route::group([], function () {
 	/*
 	 * Since I want multiple parameters in URL path, declared routes rather than using Route::resource
@@ -39,5 +43,5 @@ Route::group([], function () {
 		});
 	});
 
-	Route::resource('matches','Cricket\TeamMatchesHandlerController');
+	Route::resource('matches', 'Cricket\TeamMatchesHandlerController');
 });

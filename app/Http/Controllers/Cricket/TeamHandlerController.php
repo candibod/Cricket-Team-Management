@@ -18,6 +18,11 @@ class TeamHandlerController extends BaseController
 	|
 	*/
 
+	public function defaultRouteRedirect()
+	{
+		return redirect(route("teams.list"));
+	}
+
 	/**
 	 * Show list of all the teams.
 	 */
